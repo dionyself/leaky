@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LEAKY_VERSION = "v0.0.1"
 
 # Application definition
 
@@ -50,7 +51,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'leaky.urls'
+PUBLIC_SCHEMA_URLCONF = 'leaky.urls_public'
+ROOT_URLCONF = 'leaky.urls_tenants'
 
 TEMPLATES = [
     {
@@ -104,20 +106,20 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.admin',
-    #'graphene_django',
+    'graphene_django',
     #'myapp.hotels',
     #'myapp.houses',
 )
 
 
-'''GRAPHENE = {
+GRAPHENE = {
     'SCHEMA': 'leaky.schema.schema',
     'RELAY_CONNECTION_MAX_LIMIT': sys.maxsize,  # we can set the 'max_limit' kwarg on your DjangoConnectionField too
     'RELAY_CONNECTION_ENFORCE_FIRST_OR_LAST': True,
     'MIDDLEWARE': [
         'graphene_django.debug.DjangoDebugMiddleware',
     ]
-}'''
+}
 
 TEST_TENANT_HOST = "localhost"
 AUTO_CREATE_TEST_TENANT = True
