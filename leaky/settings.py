@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
-import os
+import os, sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -70,7 +70,7 @@ TEMPLATES = [
 
 SHARED_APPS = (
     'tenant_schemas',  # mandatory, should always be before any django app
-    'customers', # you must list the app where your tenant model resides in
+    'customers',  # you must list the app where your tenant model resides in
 
     'django.contrib.contenttypes',
 
@@ -87,6 +87,8 @@ TENANT_APPS = (
     'django.contrib.contenttypes',
 
     # your tenant-specific apps
+    'warehouses',
+    #'graphene_django',
     #'myapp.hotels',
     #'myapp.houses',
 )
@@ -95,15 +97,27 @@ INSTALLED_APPS = (
     'tenant_schemas',  # mandatory, should always be before any django app
 
     'customers',
+    'warehouses',
     'django.contrib.contenttypes',
     'django.contrib.auth',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.admin',
+    #'graphene_django',
     #'myapp.hotels',
     #'myapp.houses',
 )
+
+
+'''GRAPHENE = {
+    'SCHEMA': 'leaky.schema.schema',
+    'RELAY_CONNECTION_MAX_LIMIT': sys.maxsize,  # we can set the 'max_limit' kwarg on your DjangoConnectionField too
+    'RELAY_CONNECTION_ENFORCE_FIRST_OR_LAST': True,
+    'MIDDLEWARE': [
+        'graphene_django.debug.DjangoDebugMiddleware',
+    ]
+}'''
 
 TEST_TENANT_HOST = "localhost"
 AUTO_CREATE_TEST_TENANT = True

@@ -30,6 +30,7 @@ python manage.py makemigrations  --noinput
 
 # generate migrations for apps
 python manage.py makemigrations customers --noinput
+python manage.py makemigrations warehouses --noinput
 
 # generate empty migrations for apps
 #python manage.py makemigrations --empty customers --noinput
@@ -37,6 +38,9 @@ python manage.py makemigrations customers --noinput
 # applying migrations
 python manage.py migrate_schemas
 python manage.py migrate_schemas --shared
+
+# create new apps
+#python manage.py startapp <app_name>
 
 python init_db.py
 
