@@ -29,17 +29,6 @@ ALLOWED_HOSTS = []
 
 LEAKY_VERSION = "v0.0.1"
 
-# Application definition
-
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-]
-
 MIDDLEWARE = [
     'tenant_schemas.middleware.TenantMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -107,6 +96,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'graphene_django',
+    'djmoney',
     #'myapp.hotels',
     #'myapp.houses',
 )
