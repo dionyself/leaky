@@ -17,6 +17,11 @@ docker stop $(docker ps -a -q)
 docker rm -v $(docker ps -a -q)
 xfce4-terminal -T leaky-postgres -e "docker run -it --rm=true --name leaky-postgres -p 5432:5432 -e POSTGRES_PASSWORD=postgres postgres"
 
+# creating a tmp virtualenv for testing
+virtualenv --clear /tmp/leaky_venv -p python3.6
+. /tmp/leaky_venv/bin/activate
+pip install -r ./requirements.txt
+
 RC=1
 while [ $RC -eq 1 ]
 do
