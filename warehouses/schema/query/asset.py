@@ -7,6 +7,8 @@ class AssetNode(DjangoObjectType):
     class Meta:
         model = Asset
         interfaces = (relay.Node, )
+        exclude_fields = ["is_deleted"]
+        #only_fields = ["created_at"]
         filter_fields = {
-            "code": ["exact", "icontains", "istartswith"],
+            "starts_at": ["lte", "gte", "gt", "lt"],
         }

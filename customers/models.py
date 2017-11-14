@@ -25,7 +25,7 @@ class Client(TenantMixin):
 
 
 class Product(models.Model):
-    code = models.IntegerField(default=5, help_text="Universal barcode.")
+    code = models.IntegerField(help_text="Universal barcode.")
     code_type = models.TextField(help_text="Barcode type.")
     existence_type = models.TextField(help_text="Existence type (Pound, MB, centimeter).")
     name = models.TextField(help_text="Product name.")
