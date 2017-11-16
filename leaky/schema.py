@@ -1,4 +1,4 @@
-youimport graphene
+import graphene
 import customers.schema
 import warehouses.schema
 
