@@ -30,3 +30,5 @@ class Product(models.Model):
     existence_type = models.TextField(help_text="Existence type (Pound, MB, centimeter).")
     name = models.TextField(help_text="Product name.")
     properties = JSONField(null=True, blank=True, help_text="The event properties.")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
