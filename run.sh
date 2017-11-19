@@ -17,6 +17,10 @@ docker stop $(docker ps -a -q)
 docker rm -v $(docker ps -a -q)
 xfce4-terminal -T leaky-postgres -e "docker run -it --rm=true --name leaky-postgres -p 5432:5432 -e POSTGRES_PASSWORD=postgres postgres"
 
+# we don't need migrations until we have the first stable release
+rm -rf ./customers/migrations
+rm -rf ./warehouses/migrations
+
 # creating a tmp virtualenv for testing
 virtualenv --clear /tmp/leaky_venv -p python3.6
 . /tmp/leaky_venv/bin/activate
