@@ -6,6 +6,7 @@ from customers.models import Product
 
 class Asset(models.Model):
     product = models.ForeignKey(Product, null=True, blank=True, help_text="Global product_id.")
+    modded_product_name = models.TextField(null=True, blank=True, unique=True, help_text="Name for custominzed/variant product")
     price = MoneyField(max_digits=10, decimal_places=2, default_currency='USD', help_text="The Asset price.")
     existence = models.IntegerField(default=0, help_text="Amount of assets available.")
     properties = JSONField(null=True, blank=True, help_text="Using custom properties for local assets only")
@@ -24,4 +25,3 @@ class Asset(models.Model):
 
     class Meta:
         ordering = ["id"]
-        unique_together = ('product', 'id',)
