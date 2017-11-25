@@ -1,6 +1,12 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
-from tenant_schemas.models import TenantMixin
+from tenant_users.tenants.models import TenantBase
+from tenant_users.tenants.models import UserProfile
+from django.utils.translation import gettext as _
+
+
+class TenantUser(UserProfile):
+    name = models.CharField(_("Name"), max_length=100, blank=True)
 
 
 class Group(models.Model):
@@ -12,9 +18,10 @@ class Group(models.Model):
     is_active = models.BooleanField(default=True)
 
 
-class Client(TenantMixin):
+class Client(TenantBase):
     created_on = models.DateField(auto_now_add=True)
     name = models.CharField(max_length=100, help_text="Local Name.")
+    description = models.TextField(max_length=200)
     group = models.ForeignKey(Group, null=True, blank=True, help_text="Corporation")
     phone = models.CharField(max_length=100, help_text="Local Phone.")
     latitude = models.FloatField(null=True, blank=True, help_text="coordinates.")

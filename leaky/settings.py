@@ -23,11 +23,23 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '2wrpt_gf1-2rjf2f=3=&0mlz-m_^7n&s#qwh4$c8*3q&wb+d4o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.setdefault("LEAKY_DEBUG", 0))
+TENANT_USERS_DOMAIN = os.environ.setdefault("LEAKY_DOMAIN_NAME", "leaky.com")
+SESSION_COOKIE_DOMAIN = ".{}".format(TENANT_USERS_DOMAIN)
+SYSTEM_EMAIL = os.environ.setdefault("LEAKY_SYSTEM_EMAIL", "root@leaky.com")
+ADMIN_EMAIL = os.environ.setdefault("LEAKY_ADMIN_EMAIL", "admin@leaky.com")
+ADMIN_PASSWORD = os.environ.setdefault("LEAKY_ADMIN_PASSWORD", "password")
+ALLOWED_HOSTS = [SESSION_COOKIE_DOMAIN]
 
-ALLOWED_HOSTS = []
-
+AUTO_CREATE_TEST_TENANT = int(os.environ.setdefault("LEAKY_CREATE_TEST_TENANT", DEBUG and "1" or "0"))
+TEST_TENANT_HOST = "test"
+TEST_TENANT_NAME = "Test Client"
 LEAKY_VERSION = "v0.0.1"
+
+PUBLIC_SCHEMA_URLCONF = 'leaky.urls_public'
+ROOT_URLCONF = 'leaky.urls_tenants'
+TENANT_MODEL = "customers.Client"  # app.Model
+AUTH_USER_MODEL = "customers.TenantUser"
 
 MIDDLEWARE = [
     'tenant_schemas.middleware.TenantMiddleware',
@@ -40,13 +52,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-PUBLIC_SCHEMA_URLCONF = 'leaky.urls_public'
-ROOT_URLCONF = 'leaky.urls_tenants'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -61,44 +70,44 @@ TEMPLATES = [
 
 SHARED_APPS = (
     'tenant_schemas',  # mandatory, should always be before any django app
-    'customers',  # you must list the app where your tenant model resides in
 
+    'django.contrib.auth',
     'django.contrib.contenttypes',
+    'tenant_users.permissions',
+    'tenant_users.tenants',
+    'customers',
 
     # everything below here is optional
-    'django.contrib.auth',
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.admin',
 )
 
-TENANT_MODEL = "customers.Client" # app.Model
-TENANT_APPS = (
-    'django.contrib.contenttypes',
 
-    # your tenant-specific apps
+TENANT_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'tenant_users.permissions',
+
     'warehouses',
     #'graphene_django',
-    #'myapp.hotels',
-    #'myapp.houses',
 )
 
 INSTALLED_APPS = (
     'tenant_schemas',  # mandatory, should always be before any django app
 
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'tenant_users.permissions',
+    'tenant_users.tenants',
+
     'customers',
     'warehouses',
-    'django.contrib.contenttypes',
-    'django.contrib.auth',
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.admin',
     'graphene_django',
     'djmoney',
-    #'myapp.hotels',
-    #'myapp.houses',
 )
 
 
@@ -111,15 +120,12 @@ GRAPHENE = {
     ]
 }
 
-TEST_TENANT_HOST = "localhost"
-AUTO_CREATE_TEST_TENANT = True
 
 WSGI_APPLICATION = 'leaky.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'tenant_schemas.postgresql_backend',
@@ -131,9 +137,12 @@ DATABASES = {
         'CONN_MAX_AGE': 500,
     }
 }
-
 DATABASE_ROUTERS = (
     'tenant_schemas.routers.TenantSyncRouter',
+)
+
+AUTHENTICATION_BACKENDS = (
+    'tenant_users.permissions.backend.UserBackend',
 )
 
 # Password validation
@@ -157,19 +166,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-
 STATIC_URL = '/static/'

@@ -15,9 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from graphene_django.views import GraphQLView
+import django.contrib.auth.views
+from leaky.views import PrivateGraphQLView
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^graphql', GraphQLView.as_view(graphiql=True)),
+    url(r'^accounts/login/$', django.contrib.auth.views.login),
+    url(r'^graphql', PrivateGraphQLView.as_view(graphiql=True)),  # schema=schema)),
 ]

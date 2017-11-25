@@ -1,6 +1,7 @@
 Django==1.11.6
 django-filter==1.1.0
 django-tenant-schemas==1.9.0
+django-tenant-users==0.3.10
 django-money==0.12
 graphene==2.0
 graphene-django==2.0.0

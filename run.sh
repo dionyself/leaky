@@ -1,13 +1,18 @@
 #!/bin/bash
 
-export HOST=${HOST:="127.0.0.1"}
+export HOST=${LEAKY_HOST:="0.0.0.0"}
+export LEAKY_DOMAIN_NAME=${LEAKY_DOMAIN_NAME:="leaky.com"}
 export DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:="leaky.settings"}
+export LEAKY_DEBUG=${LEAKY_DEBUG:="1"}
+export LEAKY_SYSTEM_EMAIL=${LEAKY_SYSTEM_EMAIL:="root@leaky.com"}
+export LEAKY_ADMIN_EMAIL=${LEAKY_ADMIN_EMAIL:="admin@leaky.com"}
+export LEAKY_ADMIN_PASSWORD=${LEAKY_ADMIN_PASSWORD:="password"}
 export LEAKY_DATABASE_NAME=${LEAKY_DATABASE_NAME:="postgres"}
 export LEAKY_DATABASE_USER=${LEAKY_DATABASE_USER:="postgres"}
 export LEAKY_DATABASE_PASSWORD=${LEAKY_DATABASE_PASSWORD:="postgres"}
 export LEAKY_DATABASE_HOST=${LEAKY_DATABASE_HOST:="localhost"}
 export LEAKY_DATABASE_PORT=${LEAKY_DATABASE_PORT:="5432"}
-export LEAKY_DEFAULT_FROM_EMAIL=${LEAKY_DEFAULT_FROM_EMAIL:="from@example.com"}
+export LEAKY_DEFAULT_FROM_EMAIL=${LEAKY_DEFAULT_FROM_EMAIL:="root@leaky.com"}
 export LEAKY_STATIC_ROOT=${LEAKY_STATIC_ROOT:="/srv/leaky-app/static/"}
 export LEAKY_MEDIA_ROOT=${LEAKY_MEDIA_ROOT:="/srv/leaky-app/media/"}
 export LEAKY_PORT=${LEAKY_PORT:="8000"}
@@ -54,4 +59,4 @@ python manage.py migrate_schemas --shared
 python init_db.py
 
 # Start the server
-python3 -u manage.py runserver 0.0.0.0:8000
+python3 -u manage.py runserver ${HOST}:8000
