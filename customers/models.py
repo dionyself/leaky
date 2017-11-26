@@ -11,12 +11,20 @@ class Group(models.Model):
     properties = JSONField(null=True, blank=True, help_text="The group properties.")
     related_group = models.ForeignKey("self", null=True)
     phone = models.CharField(max_length=100, help_text="Local Phone.")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
 
 
 class TenantUser(UserProfile):
     name = models.CharField(_("Name"), max_length=100, blank=True)
     group = models.ForeignKey(Group, null=True, blank=True, help_text="Corporation")
+    properties = JSONField(null=True, blank=True, help_text="The group properties.")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
 
 
 class Client(TenantBase):
@@ -29,6 +37,9 @@ class Client(TenantBase):
     longitude = models.FloatField(null=True, blank=True, help_text="coodinates.")
     time_zone = models.CharField(max_length=100, null=True, blank=True)
     is_active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     auto_create_schema = True
 
 
@@ -40,6 +51,7 @@ class Product(models.Model):
     properties = JSONField(null=True, blank=True, help_text="The Review properties.")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_deleted = models.BooleanField(default=False)
 
 
 class Review(models.Model):
@@ -52,6 +64,9 @@ class Review(models.Model):
     properties = JSONField(null=True, blank=True, help_text="The Review properties.")
     likes = models.ManyToManyField(TenantUser, related_name="reviews_liked", help_text="Likes.")
     dislikes = models.ManyToManyField(TenantUser, related_name="reviews_disliked", help_text="Dislikes.")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_deleted = models.BooleanField(default=False)
 
 
 class ReviewComment(models.Model):
@@ -59,3 +74,6 @@ class ReviewComment(models.Model):
     content = models.TextField(help_text="Comment content.")
     likes = models.ManyToManyField(TenantUser, related_name="review_comments_liked", help_text="Likes.")
     dislikes = models.ManyToManyField(TenantUser, related_name="review_comments_disliked", help_text="Dislikes.")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_deleted = models.BooleanField(default=False)
