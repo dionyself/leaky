@@ -112,7 +112,7 @@ INSTALLED_APPS = (
 
 
 GRAPHENE = {
-    'SCHEMA': 'leaky.schema.schema',
+    'SCHEMA': 'leaky.schema.public_schema',
     'RELAY_CONNECTION_MAX_LIMIT': sys.maxsize,  # we can set the 'max_limit' kwarg on your DjangoConnectionField too
     'RELAY_CONNECTION_ENFORCE_FIRST_OR_LAST': True,
     'MIDDLEWARE': [

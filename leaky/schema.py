@@ -4,19 +4,30 @@ import warehouses.schema
 
 
 class Query(
-    warehouses.schema.Query,
     customers.schema.Query
 ):
-    # This class will inherit from multiple Queries
-    # as we begin to add more apps to our project
     pass
 
 
 class Mutation(
-    warehouses.schema.Mutation,
     customers.schema.Mutation
 ):
     pass
 
 
-schema = graphene.Schema(query=Query, mutation=Mutation)
+class TenantQuery(
+    Query,
+    warehouses.schema.Query,
+):
+    pass
+
+
+class TenantMutation(
+    Mutation,
+    warehouses.schema.Mutation,
+):
+    pass
+
+
+public_schema = graphene.Schema(query=Query, mutation=Mutation)
+tenant_schema = graphene.Schema(query=TenantQuery, mutation=TenantMutation)
