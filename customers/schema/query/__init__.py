@@ -10,6 +10,7 @@ from .review import ReviewNode
 from .tenant import TenantNode
 from .user import UserNode
 
+
 class Query(ObjectType):
 
     product = relay.Node.Field(ProductNode)
