@@ -44,14 +44,17 @@ class Client(TenantBase):
 
 
 class Product(models.Model):
-    code = models.IntegerField(help_text="Universal barcode.")
+    code = models.IntegerField(null=True, blank=True, help_text="Universal barcode.")
     code_type = models.TextField(help_text="Barcode type.")
     existence_type = models.TextField(help_text="Existence type (Pound, MB, centimeter).")
-    name = models.TextField(help_text="Product name.")
+    name = models.TextField(unique=True, help_text="Product name.")
     properties = JSONField(null=True, blank=True, help_text="The Review properties.")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ("code", "code_type")
 
 
 class Review(models.Model):

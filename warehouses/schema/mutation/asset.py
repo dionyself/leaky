@@ -1,8 +1,11 @@
+from django.utils import timezone
 import graphene
-from datetime import datetime
+from datetime import datetime, timedelta
 from customers.models import Product
-from warehouses.models import Asset
+from warehouses.models import Asset, AssetTag
 from djmoney.money import Money
+from graphene.types.generic import GenericScalar
+from graphene.types.datetime import DateTime
 
 
 class CreateAsset(graphene.Mutation):
@@ -10,42 +13,40 @@ class CreateAsset(graphene.Mutation):
         product_id = graphene.Int()
         product_code = graphene.Int()
         modded_product_name = graphene.String()
-        price = graphene.Int()
+        cost = graphene.Int()
         existence = graphene.Int()
-        properties = graphene.String()
-        tags = graphene.String()
+        properties = GenericScalar()
+        tags = graphene.List(graphene.Int)
         asset_type = graphene.String()
         category = graphene.String()
         duration = graphene.String()
-        expires_at = graphene.String()
-        starts_at = graphene.String()
+        expires_at = DateTime()
+        starts_at = DateTime()
         is_deleted = graphene.Boolean()
         is_expired = graphene.Boolean()
 
     asset_id = graphene.Int()
     ok = graphene.Boolean()
+    added_tags = graphene.List(graphene.Int)
+    failed_tags = graphene.List(graphene.Int)
 
     def mutate(self, info, **args):
 
         ok = False
         asset = None
+        tags = args.pop("tags", [])
         parsed_args = args.copy()
         if "product_id" in args:
             del parsed_args["product_id"]
         if "product_code" in args:
             del parsed_args["product_code"]
-        if "starts_at" in args:
-            parsed_args["starts_at"] = datetime.strptime(
-                args["starts_at"], "%Y-%m-%d %H:%M:%S.%f")
-        else:
-            parsed_args["starts_at"] = datetime.now()
+        if "starts_at" not in args:
+            parsed_args["starts_at"] = timezone.now()
         if "expires_at" in args:
-            parsed_args["expires_at"] = datetime.strptime(
-                args["expires_at"], "%Y-%m-%d %H:%M:%S.%f")
             parsed_args["duration"] = args["expires_at"] - parsed_args["starts_at"]
         elif "duration" in args:
-            t = datetime.datetime.strptime(args["duration"], "%H:%M:%S")
-            parsed_args["duration"] = datetime.timedelta(
+            t = datetime.strptime(args["duration"], "%H:%M:%S")
+            parsed_args["duration"] = timedelta(
                 hours=t.hour, minutes=t.minute, seconds=t.second)
             args["expires_at"] = parsed_args["starts_at"] + parsed_args["duration"]
 
@@ -55,7 +56,7 @@ class CreateAsset(graphene.Mutation):
                     Product.objects.filter(
                         product_code=args["product_code"]) if args.get(
                             "product_code").first() else None),
-            price=Money(args.get("price", 0)),
+            cost=Money(args.get("cost", 0)),
         )
 
         if parsed_args["product"] or parsed_args.get("modded_product_name"):
@@ -64,10 +65,24 @@ class CreateAsset(graphene.Mutation):
                 asset = Asset.objects.create(**parsed_args)
                 ok = True
             except:
-                raise
+                ok = False
+
+        added_tags = []
+        failed_tags = []
+
+        for tag_id in tags:
+            try:
+                tag = AssetTag.objects.get(pk=tag_id)
+                asset.assettag_set.add(tag)
+                added_tags.append(tag_id)
+            except:
+                failed_tags.append(tag_id)
+                ok = False
 
         return CreateAsset(
             asset_id=asset and asset.id or 0,
+            added_tags=added_tags,
+            failed_tags=failed_tags,
             ok=ok)
 
 
@@ -76,59 +91,86 @@ class UpdateAsset(graphene.Mutation):
         pk = graphene.Int()
         product_id = graphene.Int()
         modded_product_name = graphene.String()
-        price = graphene.Int()
+        cost = graphene.Int()
         existence = graphene.Int()
-        properties = graphene.String()
-        tags = graphene.String()
+        properties = GenericScalar()
+        tags_to_add = graphene.List(graphene.Int)
+        tags_to_remove = graphene.List(graphene.Int)
         asset_type = graphene.String()
         category = graphene.String()
         duration = graphene.String()
         expires_at = graphene.String()
-        starts_at = graphene.String()
+        starts_at = DateTime()
         is_deleted = graphene.Boolean()
         is_expired = graphene.Boolean()
 
     asset_id = graphene.Int()
     ok = graphene.Boolean()
+    added_tags = graphene.List(graphene.Int)
+    removed_tags = graphene.List(graphene.Int)
+    failed_tags = graphene.List(graphene.Int)
 
     def mutate(self, info, **args):
 
         ok = False
+        tags_to_add = args.pop("tags_to_add", [])
+        tags_to_remove = args.pop("tags_to_remove", [])
         parsed_args = args.copy()
-        if "starts_at" in args:
-            parsed_args["starts_at"] = datetime.strptime(
-                args["starts_at"], "%Y-%m-%d %H:%M:%S.%f")
-        else:
-            parsed_args["starts_at"] = datetime.now()
+        if "starts_at" not in args:
+            parsed_args["starts_at"] = timezone.now()
         if "expires_at" in args:
-            parsed_args["expires_at"] = datetime.strptime(
-                args["expires_at"], "%Y-%m-%d %H:%M:%S.%f")
             parsed_args["duration"] = args["expires_at"] - parsed_args["starts_at"]
         elif "duration" in args:
-            t = datetime.datetime.strptime(args["duration"], "%H:%M:%S")
-            parsed_args["duration"] = datetime.timedelta(
+            t = datetime.strptime(args["duration"], "%H:%M:%S")
+            parsed_args["duration"] = timedelta(
                 hours=t.hour, minutes=t.minute, seconds=t.second)
-            args["expires_at"] = parsed_args["starts_at"] + parsed_args["duration"]
+            parsed_args["expires_at"] = parsed_args["starts_at"] + parsed_args["duration"]
 
         parsed_args.update(
-            price=Money(args.get("price", 0)))
+            cost=Money(args.get("cost", 0)))
 
         try:
-            if args["product_id"] or args.get("modded_product_name"):
+            if args.get("pk") or args.get("modded_product_name"):
                 if "pk" in args:
-                    pk = args.pop("pk")
+                    pk = parsed_args.pop("pk")
                     Asset.objects.filter(id=pk).update(**parsed_args)
                     asset = Asset.objects.filter(id=pk).first()
                 elif args['modded_product_name']:
+                    modded_product_name = parsed_args.pop('modded_product_name')
                     Asset.objects.filter(
-                        modded_product_name=args['modded_product_name']).update(
+                        modded_product_name=modded_product_name).update(
                             **parsed_args)
                     asset = Asset.objects.filter(
-                        modded_product_name=args['modded_product_name']).first()
+                        modded_product_name=modded_product_name).first()
                 ok = True
         except:
             asset = None
 
+        added_tags = []
+        removed_tags = []
+        failed_tags = []
+
+        for tag_id in tags_to_add:
+            try:
+                tag = AssetTag.objects.get(pk=tag_id)
+                asset.assettag_set.add(tag)
+                added_tags.append(tag_id)
+            except:
+                failed_tags.append(tag_id)
+                ok = False
+
+        for tag_id in tags_to_remove:
+            try:
+                asset.assettag_set.remove(
+                    AssetTag.objects.get(pk=tag_id))
+                removed_tags.append(tag_id)
+            except:
+                failed_tags.append(tag_id)
+                ok = False
+
         return UpdateAsset(
             asset_id=asset and asset.id or 0,
+            added_tags=added_tags,
+            removed_tags=removed_tags,
+            failed_tags=failed_tags,
             ok=ok)

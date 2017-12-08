@@ -1,9 +1,12 @@
 from graphene_django import DjangoObjectType
 from graphene import relay
 from warehouses.models import AssetTag
+from graphene.types.generic import GenericScalar
 
 
 class AssetTagNode(DjangoObjectType):
+    properties = GenericScalar()
+
     class Meta:
         model = AssetTag
         interfaces = (relay.Node, )

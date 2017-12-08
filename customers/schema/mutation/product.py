@@ -1,5 +1,6 @@
 import graphene
 from customers.models import Product
+from graphene.types.generic import GenericScalar
 
 
 class CreateProduct(graphene.Mutation):
@@ -9,7 +10,7 @@ class CreateProduct(graphene.Mutation):
         asset_type = graphene.String()
         category = graphene.String()
         name = graphene.String()
-        properties = graphene.String()
+        properties = GenericScalar()
 
     product_id = graphene.Int()
     ok = graphene.Boolean()
@@ -36,7 +37,7 @@ class UpdateProduct(graphene.Mutation):
         asset_type = graphene.String()
         category = graphene.String()
         name = graphene.String()
-        properties = graphene.String()
+        properties = GenericScalar()
 
     product_id = graphene.Int()
     ok = graphene.Boolean()

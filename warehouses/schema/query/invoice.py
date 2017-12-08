@@ -1,9 +1,12 @@
 from graphene_django import DjangoObjectType
 from graphene import relay
 from warehouses.models import Invoice
+from graphene.types.generic import GenericScalar
 
 
 class InvoiceNode(DjangoObjectType):
+    properties = GenericScalar()
+
     class Meta:
         model = Invoice
         interfaces = (relay.Node, )
