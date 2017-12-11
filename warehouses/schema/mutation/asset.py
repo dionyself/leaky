@@ -11,7 +11,6 @@ from graphene.types.datetime import DateTime
 class CreateAsset(graphene.Mutation):
     class Arguments:
         product_id = graphene.Int()
-        product_code = graphene.Int()
         modded_product_name = graphene.String()
         cost = graphene.Int()
         existence = graphene.Int()
@@ -38,24 +37,19 @@ class CreateAsset(graphene.Mutation):
         parsed_args = args.copy()
         if "product_id" in args:
             del parsed_args["product_id"]
-        if "product_code" in args:
-            del parsed_args["product_code"]
         if "starts_at" not in args:
             parsed_args["starts_at"] = timezone.now()
         if "expires_at" in args:
             parsed_args["duration"] = args["expires_at"] - parsed_args["starts_at"]
         elif "duration" in args:
-            t = datetime.strptime(args["duration"], "%H:%M:%S")
+            t = datetime.strptime(args["duration"], "%d days, %H:%M:%S")
             parsed_args["duration"] = timedelta(
-                hours=t.hour, minutes=t.minute, seconds=t.second)
+                days=t.day, hours=t.hour, minutes=t.minute, seconds=t.second)
             args["expires_at"] = parsed_args["starts_at"] + parsed_args["duration"]
 
         parsed_args.update(
             product=Product.objects.filter(
-                id=args.get("product_id")).first() or (
-                    Product.objects.filter(
-                        product_code=args["product_code"]) if args.get(
-                            "product_code").first() else None),
+                id=args.get("product_id")).first() or None,
             cost=Money(args.get("cost", 0)),
         )
 
@@ -121,9 +115,9 @@ class UpdateAsset(graphene.Mutation):
         if "expires_at" in args:
             parsed_args["duration"] = args["expires_at"] - parsed_args["starts_at"]
         elif "duration" in args:
-            t = datetime.strptime(args["duration"], "%H:%M:%S")
+            t = datetime.strptime(args["duration"], "%d days, %H:%M:%S")
             parsed_args["duration"] = timedelta(
-                hours=t.hour, minutes=t.minute, seconds=t.second)
+                days=t.day, hours=t.hour, minutes=t.minute, seconds=t.second)
             parsed_args["expires_at"] = parsed_args["starts_at"] + parsed_args["duration"]
 
         parsed_args.update(
