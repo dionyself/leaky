@@ -1,5 +1,5 @@
 import graphene
-from customers.models import Invoice
+from warehouses.models import Invoice
 from graphene.types.generic import GenericScalar
 
 

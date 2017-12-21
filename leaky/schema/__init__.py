@@ -15,6 +15,13 @@ class Mutation(
     pass
 
 
+class TenantSubscription(
+    # Subscription, # no subscription on public_schema
+    warehouses.schema.Subscription,
+):
+    pass
+
+
 class TenantQuery(
     Query,
     warehouses.schema.Query,
@@ -30,4 +37,4 @@ class TenantMutation(
 
 
 public_schema = graphene.Schema(query=Query, mutation=Mutation)
-tenant_schema = graphene.Schema(query=TenantQuery, mutation=TenantMutation)
+tenant_schema = graphene.Schema(query=TenantQuery, mutation=TenantMutation)  # subscription=TenantSubscription)
