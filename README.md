@@ -4,5 +4,10 @@ Leaky is Price tracker written in Python3, it was proposed as a consumer defende
 # requirements
 python3.6, virtualenv, docker
 
-# clone the repo, and then run the included script
+# Clone the repo, and then run the included script
+Map the domains on your hosts file
+`127.0.0.1 leaky.com test.leaky.com`
 run.sh
+
+# Visit to login
+test.leaky.com:8000/graphql
