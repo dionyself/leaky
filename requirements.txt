@@ -4,3 +4,7 @@ django-tenant-schemas<2.0.0
 django-tenant-users<1.0.0
 django-money<1.0.0
 graphene-django<3.0.0
+
+# dependencies for graphene-django-subscriptions==0.0.2
+djangorestframework==3.6.4
+channels-api>=0.4.0
