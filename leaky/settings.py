@@ -100,6 +100,8 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'tenant_users.permissions',
     'tenant_users.tenants',
+    'channels',
+    'channels_api',
 
     'customers',
     'warehouses',
@@ -110,6 +112,12 @@ INSTALLED_APPS = (
     'djmoney',
 )
 
+CHANNEL_LAYERS = {
+  "default": {
+    "BACKEND": "asgiref.inmemory.ChannelLayer",
+    "ROUTING": "leaky.routing.project_routing",  # Our project routing
+  },
+}
 
 GRAPHENE = {
     'SCHEMA': 'leaky.schema.public_schema',

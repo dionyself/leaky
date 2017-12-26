@@ -30,6 +30,7 @@ rm -rf ./warehouses/migrations
 virtualenv --clear /tmp/leaky_venv -p python3.6
 . /tmp/leaky_venv/bin/activate
 pip install -r ./requirements.txt
+pip install --no-deps -r ./no-deps-requirements.txt
 
 RC=1
 while [ $RC -eq 1 ]

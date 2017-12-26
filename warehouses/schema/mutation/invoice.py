@@ -1,6 +1,7 @@
 import graphene
 from warehouses.models import Invoice
 from graphene.types.generic import GenericScalar
+from warehouses.serializers import InvoiceSerializer
 
 
 class CreateInvoice(graphene.Mutation):
@@ -20,7 +21,9 @@ class CreateInvoice(graphene.Mutation):
 
         ok = False
         try:
-            invoice = Invoice.objects.create(**args)
+            serializer = InvoiceSerializer(data=args)
+            serializer.is_valid(raise_exception=True)
+            invoice = serializer.save()
             ok = True
         except:
             invoice = None
@@ -52,8 +55,10 @@ class UpdateInvoice(graphene.Mutation):
         try:
             if 'pk' in args:
                 pk = args.pop("pk")
-                Invoice.objects.filter(id=pk).update(**args)
                 invoice = Invoice.objects.filter(id=pk).first()
+                serializer = InvoiceSerializer(invoice, data=args, partial=True)
+                serializer.is_valid(raise_exception=True)
+                invoice = serializer.save()
                 ok = True
         except:
             invoice = None
