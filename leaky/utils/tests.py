@@ -1,10 +1,20 @@
 import unittest
+from traceback import print_exc
 from django.conf import settings
+from tenant_users.tenants.utils import create_public_tenant
+from tenant_users.tenants.tasks import provision_tenant
+from customers.models import TenantUser
 from graphene.test import Client as GqlClient
 from tenant_schemas.utils import schema_context
 from leaky.schema import public_schema, tenant_schema
 from customers.models import Client
 
+main_host = settings.TENANT_USERS_DOMAIN
+main_email = settings.SYSTEM_EMAIL
+test_tenant_name = settings.TEST_TENANT_NAME
+test_tenant_host = settings.TEST_TENANT_HOST
+test_tenant_email = settings.ADMIN_EMAIL
+test_tenant_password = settings.ADMIN_PASSWORD
 gql_public_client = GqlClient(public_schema)
 gql_tenant_client = GqlClient(tenant_schema)
 
@@ -41,5 +51,21 @@ class BaseTestCase(unittest.TestCase):
         }
     }
 
-    execute_gql_query = execute_gql_query
-    pass
+    @classmethod
+    def setUpClass(cls):
+        # Create public tenant, test tenant and user.
+        try:
+            create_public_tenant(main_host, main_email)
+            user = TenantUser.objects.create_user(email=test_tenant_email, password=test_tenant_password, is_active=True)
+            fqdn = provision_tenant(test_tenant_name, test_tenant_host, test_tenant_email)
+        except Exception as e:
+            print_exc()
+
+    def execute(self, *args, **kwargs):
+        return execute_gql_query(*args, **kwargs)
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass

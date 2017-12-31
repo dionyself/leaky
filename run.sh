@@ -16,6 +16,7 @@ export LEAKY_DEFAULT_FROM_EMAIL=${LEAKY_DEFAULT_FROM_EMAIL:="root@leaky.com"}
 export LEAKY_STATIC_ROOT=${LEAKY_STATIC_ROOT:="/srv/leaky-app/static/"}
 export LEAKY_MEDIA_ROOT=${LEAKY_MEDIA_ROOT:="/srv/leaky-app/media/"}
 export LEAKY_PORT=${LEAKY_PORT:="8000"}
+export LEAKY_TESTS=${LEAKY_TESTS:="0"}
 
 # remove this before running
 docker stop $(docker ps -a -q)
@@ -55,9 +56,13 @@ python manage.py migrate_schemas
 python manage.py migrate_schemas --shared
 
 # create new apps
-#python manage.py startapp <app_name>
+# python manage.py startapp <app_name>
 
-python init_db.py
+if [ $LEAKY_TESTS == "1" ]; then
+    python manage.py test -v 2
+else
+    python init_db.py
+fi
 
 # Start the server
-python3 -u manage.py runserver ${HOST}:8000
+python manage.py runserver ${HOST}:8000
