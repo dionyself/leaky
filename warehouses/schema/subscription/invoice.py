@@ -1,4 +1,4 @@
-from graphene_django_subscriptions.subscription import Subscription
+from graphene_django_subscriptions import Subscription
 from warehouses.serializers import InvoiceSerializer
 
 
