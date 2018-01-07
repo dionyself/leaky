@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'graphql_jwt.middleware.JWTMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -150,6 +151,7 @@ DATABASE_ROUTERS = (
 )
 
 AUTHENTICATION_BACKENDS = (
+    'graphql_jwt.backends.JWTBackend',
     'tenant_users.permissions.backend.UserBackend',
 )
 

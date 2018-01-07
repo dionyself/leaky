@@ -1,3 +1,4 @@
+import graphql_jwt
 from graphene import ObjectType
 from .product import CreateProduct
 from .product import UpdateProduct
@@ -11,6 +12,7 @@ from .user import CreateUser
 from .user import UpdateUser
 from .tenant import CreateClient
 from .tenant import UpdateClient
+from .login import LogIn
 
 
 class Mutation(ObjectType):
@@ -26,3 +28,6 @@ class Mutation(ObjectType):
     update_user = UpdateUser.Field()
     create_store = CreateClient.Field()
     update_store = UpdateClient.Field()
+    login = LogIn.Field()
+    verify_token = graphql_jwt.Verify.Field()
+    refresh_token = graphql_jwt.Refresh.Field()

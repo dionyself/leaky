@@ -17,10 +17,11 @@ from django.conf.urls import url
 from django.contrib import admin
 import django.contrib.auth.views
 from leaky.views import PrivateGraphQLView
+from django.views.decorators.csrf import csrf_exempt
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/login/$', django.contrib.auth.views.login),
-    url(r'^graphql', PrivateGraphQLView.as_view(graphiql=True)),  # schema=schema)),
+    url(r'^graphql', csrf_exempt(PrivateGraphQLView.as_view(graphiql=True))),
 ]

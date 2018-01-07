@@ -5,6 +5,7 @@ django-tenant-users<1.0.0
 django-money<1.0.0
 graphene-django<3.0.0
 graphene-django-subscriptions==0.0.3
+django-graphql-jwt==0.0.2
 
 # dependencies for graphene-django-subscriptions==0.0.3
 djangorestframework==3.6.4
