@@ -1,13 +1,13 @@
 from graphene_django import DjangoObjectType
 from graphene import relay
-from customers.models import Client
+from customers.models import Corporation
 
 
-class TenantNode(DjangoObjectType):
+class CorporationNode(DjangoObjectType):
     class Meta:
-        model = Client
+        model = Corporation
         interfaces = (relay.Node, )
-        exclude_fields = ["is_deleted"]
+        exclude_fields = ["related_corporation"]
         filter_fields = {
             "created_at": ["lte", "gte", "gt", "lt"],
         }

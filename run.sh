@@ -18,10 +18,9 @@ export LEAKY_MEDIA_ROOT=${LEAKY_MEDIA_ROOT:="/srv/leaky-app/media/"}
 export LEAKY_PORT=${LEAKY_PORT:="8000"}
 export LEAKY_TESTS=${LEAKY_TESTS:="0"}
 
-# remove this before running
-docker stop $(docker ps -a -q)
-docker rm -v $(docker ps -a -q)
-xfce4-terminal -T leaky-postgres -e "docker run -it --rm=true --name leaky-postgres -p 5432:5432 -e POSTGRES_PASSWORD=postgres postgres"
+# postgres
+docker stop leaky-postgres
+docker run -d --rm=true --name leaky-postgres -p 5432:5432 -e POSTGRES_PASSWORD=postgres postgres
 
 # we don't need migrations until we have the first stable release
 rm -rf ./customers/migrations
@@ -59,9 +58,9 @@ python manage.py migrate_schemas --shared
 
 if [ $LEAKY_TESTS == "1" ]; then
     python manage.py test -v 2
-else
-    python init_db.py
 fi
+
+python init_db.py
 
 # Start the server
 python manage.py runserver ${HOST}:8000

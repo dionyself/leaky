@@ -1,13 +1,13 @@
 from graphene_django import DjangoObjectType
 from graphene import relay
-from customers.models import Group
+from tenant_schemas.utils import get_tenant_model
 
 
-class GroupNode(DjangoObjectType):
+class StoreNode(DjangoObjectType):
     class Meta:
-        model = Group
+        model = get_tenant_model()
         interfaces = (relay.Node, )
-        exclude_fields = ["related_group"]
+        exclude_fields = ["is_deleted"]
         filter_fields = {
             "created_at": ["lte", "gte", "gt", "lt"],
         }

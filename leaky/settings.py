@@ -33,13 +33,13 @@ ALLOWED_HOSTS = [SESSION_COOKIE_DOMAIN]
 
 AUTO_CREATE_TEST_TENANT = int(os.environ.setdefault("LEAKY_CREATE_TEST_TENANT", DEBUG and "1" or "0"))
 TEST_TENANT_HOST = "test"
-TEST_TENANT_NAME = "Test Client"
+TEST_TENANT_NAME = "Test Store"
 LEAKY_VERSION = "v0.0.1"
 
 PUBLIC_SCHEMA_URLCONF = 'leaky.urls_public'
 ROOT_URLCONF = 'leaky.urls_tenants'
-TENANT_MODEL = "customers.Client"  # app.Model
-AUTH_USER_MODEL = "customers.TenantUser"
+TENANT_MODEL = "customers.Store"  # app.Model
+AUTH_USER_MODEL = "customers.StoreUser"
 
 MIDDLEWARE = [
     'tenant_schemas.middleware.TenantMiddleware',

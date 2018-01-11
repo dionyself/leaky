@@ -3,11 +3,11 @@ from traceback import print_exc
 from django.conf import settings
 from tenant_users.tenants.utils import create_public_tenant
 from tenant_users.tenants.tasks import provision_tenant
-from customers.models import TenantUser
+from customers.models import StoreUser
 from graphene.test import Client as GqlClient
 from tenant_schemas.utils import schema_context
 from leaky.schema import public_schema, tenant_schema
-from customers.models import Client
+from customers.models import Store
 
 main_host = settings.TENANT_USERS_DOMAIN
 main_email = settings.SYSTEM_EMAIL
@@ -23,15 +23,15 @@ def execute_gql_query(query, tenant_name="public", tenant=None, as_user=None):
     if not tenant:
         with schema_context("public"):
             if tenant_name == "public":
-                tenant = Client.objects.filter(
+                tenant = Store.objects.filter(
                     domain_url=settings.TENANT_USERS_DOMAIN).first()
                 with schema_context(tenant.schema_name):
                     return gql_public_client.execute(query).get("data")
             elif tenant_name == "test":
-                tenant = Client.objects.filter(
+                tenant = Store.objects.filter(
                     domain_url="%s.%s" % (settings.TEST_TENANT_HOST, settings.TENANT_USERS_DOMAIN)).first()
             else:
-                tenant = Client.objects.filter(
+                tenant = Store.objects.filter(
                     domain_url="%s.%s" % (tenant_name, settings.TENANT_USERS_DOMAIN)).first()
     with schema_context(tenant.schema_name):
         return gql_tenant_client.execute(query).get("data")
@@ -56,7 +56,7 @@ class BaseTestCase(unittest.TestCase):
         # Create public tenant, test tenant and user.
         try:
             create_public_tenant(main_host, main_email)
-            user = TenantUser.objects.create_user(email=test_tenant_email, password=test_tenant_password, is_active=True)
+            user = StoreUser.objects.create_user(email=test_tenant_email, password=test_tenant_password, is_active=True)
             fqdn = provision_tenant(test_tenant_name, test_tenant_host, test_tenant_email)
         except Exception as e:
             print_exc()

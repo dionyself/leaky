@@ -1,5 +1,5 @@
 import graphene
-from customers.models import TenantUser
+from django.contrib.auth import get_user_model
 from graphene.types.generic import GenericScalar
 
 
@@ -20,7 +20,7 @@ class CreateUser(graphene.Mutation):
 
         ok = False
         try:
-            user = TenantUser.objects.create_user(
+            user = get_user_model().objects.create_user(
                 email=args.pop("email", ""),
                 password=args.pop("password", ""),
                 is_active=args.pop("is_active", False))
@@ -55,7 +55,7 @@ class UpdateUser(graphene.Mutation):
         try:
             if 'pk' in args:
                 pk = args.pop("pk")
-                user = TenantUser.objects.filter(id=pk).first()
+                user = get_user_model().objects.filter(id=pk).first()
                 ok = True
         except:
             user = None

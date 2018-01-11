@@ -4,10 +4,10 @@ from graphene_django.debug import DjangoDebug
 from graphene_django.filter import DjangoFilterConnectionField
 from django.conf import settings
 from .product import ProductNode
-from .group import GroupNode
+from .corporation import CorporationNode
 from .review_comment import ReviewCommentNode
 from .review import ReviewNode
-from .tenant import TenantNode
+from .store import StoreNode
 from .user import UserNode
 
 
@@ -15,14 +15,14 @@ class Query(ObjectType):
 
     product = relay.Node.Field(ProductNode)
     products = DjangoFilterConnectionField(ProductNode)
-    group = relay.Node.Field(GroupNode)
-    groups = DjangoFilterConnectionField(GroupNode)
+    corporation = relay.Node.Field(CorporationNode)
+    corporations = DjangoFilterConnectionField(CorporationNode)
     review_comment = relay.Node.Field(ReviewCommentNode)
     review_comments = DjangoFilterConnectionField(ReviewCommentNode)
     review = relay.Node.Field(ReviewNode)
     reviews = DjangoFilterConnectionField(ReviewNode)
-    store = relay.Node.Field(TenantNode)
-    stores = DjangoFilterConnectionField(TenantNode)
+    store = relay.Node.Field(StoreNode)
+    stores = DjangoFilterConnectionField(StoreNode)
     user = relay.Node.Field(UserNode)
     users = DjangoFilterConnectionField(UserNode)
 

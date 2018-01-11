@@ -9,8 +9,9 @@ django.setup()
 from django.conf import settings
 from tenant_users.tenants.utils import create_public_tenant
 from tenant_users.tenants.tasks import provision_tenant
-from customers.models import TenantUser
+from django.contrib.auth import get_user_model
 
+UserModel = get_user_model()
 main_host = settings.TENANT_USERS_DOMAIN
 main_email = settings.SYSTEM_EMAIL
 
@@ -21,7 +22,7 @@ test_tenant_password = settings.ADMIN_PASSWORD
 
 # Create public tenant and user.
 create_public_tenant(main_host, main_email)
-user = TenantUser.objects.create_user(email=test_tenant_email, password=test_tenant_password, is_active=True)
+user = UserModel.objects.create_user(email=test_tenant_email, password=test_tenant_password, is_active=True)
 
 print("Creating a test client Using subdomain [{}], name [{}]... to avoid this set AUTO_CREATE_TEST_TENANT to False".format(
     test_tenant_host, test_tenant_name))
