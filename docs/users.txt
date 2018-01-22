@@ -1,0 +1,6 @@
+1-  User types
+  a) if user has not tennat permissions, not corporation association and is not superuser then user is a CONSUMER/BUYER, and shoulbe added to consumers_group only
+  b) if user has not tennat permissions, has corporation association and is not superuser then user is a Corporation level user/BOSS, his perms shouldbe *build* from the public Tennat
+  c) if user has not tennat permissions, not corporation association and is superuser then user is a CONGLOMERATED level user/BOSS, his perms shouldbe *build* from the public Tennat
+  d) if user has tennat permissions, has corporation association and is not superuser then user is a Simple store employed
+  c) Any other thing will get access denied

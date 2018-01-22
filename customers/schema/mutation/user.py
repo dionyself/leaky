@@ -8,9 +8,11 @@ class CreateUser(graphene.Mutation):
         name = graphene.String()
         email = graphene.String()
         password = graphene.String()
-        group_id = graphene.Int()
+        corporation_id = graphene.Int()
         properties = GenericScalar()
         is_active = graphene.Boolean()
+        is_superuser = graphene.Boolean()
+        is_staff = graphene.Boolean()
         is_deleted = graphene.Boolean()
 
     user_id = graphene.Int()
@@ -39,7 +41,7 @@ class UpdateUser(graphene.Mutation):
     class Arguments:
         pk = graphene.Int()
         name = graphene.String()
-        group_id = graphene.Int()
+        corporation_id = graphene.Int()
         properties = GenericScalar()
         is_active = graphene.Boolean()
         is_deleted = graphene.Boolean()

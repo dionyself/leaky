@@ -31,7 +31,10 @@ ADMIN_EMAIL = os.environ.setdefault("LEAKY_ADMIN_EMAIL", "admin@leaky.com")
 ADMIN_PASSWORD = os.environ.setdefault("LEAKY_ADMIN_PASSWORD", "password")
 ALLOWED_HOSTS = [SESSION_COOKIE_DOMAIN]
 
+# Tenant=Store, TennatGroup=Corporation
+AUTO_CREATE_TEST_TENANT_GROUP = int(os.environ.setdefault("LEAKY_CREATE_TEST_TENANT_GROUP", DEBUG and "1" or "0"))
 AUTO_CREATE_TEST_TENANT = int(os.environ.setdefault("LEAKY_CREATE_TEST_TENANT", DEBUG and "1" or "0"))
+TEST_TENANT_GROUP_NAME = "test_corporation"
 TEST_TENANT_HOST = "test"
 TEST_TENANT_NAME = "Test Store"
 LEAKY_VERSION = "v0.0.1"

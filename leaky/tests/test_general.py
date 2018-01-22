@@ -6,12 +6,18 @@ class TestGeneral(BaseTestCase):
     """ Generic tests for invoices and assets """
 
     def test_00_all_empty(self):
-        assert not self.execute("{products(first:1){edges{node{id}}}}")['products']['edges'], "Products detected: Database shouldbe empty"
-        assert not self.execute("{reviews(first:1){edges{node{id}}}}")['reviews']['edges'], "Reviews detected: Database shouldbe empty"
-        assert not self.execute("{reviewComments(first:1){edges{node{id}}}}")['reviewComments']['edges'], "ReviewComments detected: Database shouldbe empty"
-        assert not self.execute("{assets(first:1){edges{node{id}}}}", tenant_name="test")['assets']['edges'], "Assets detected: Database shouldbe empty"
-        assert not self.execute("{assetTags(first:1){edges{node{id}}}}", tenant_name="test")['assetTags']['edges'], "AssetTags detected: Database shouldbe empty"
-        assert not self.execute("{invoices(first:1){edges{node{id}}}}", tenant_name="test")['invoices']['edges'], "Invoices detected: Database shouldbe empty"
+        nodes = ['products', 'reviews', 'reviewComments', 'corporations', 'assets', 'assetTags', 'invoices']
+        tenant_nodes = ['assets', 'assetTags', 'invoices']
+        for node in nodes:
+            assert not self.execute(
+                "{%s(first:1){edges{node{id}}}}" % node, tenant_name=(node in tenant_nodes) and "test" or "public")[node]['edges'], \
+                "{} detected: Database shouldbe empty".format(node)
+
+    def test_01_create_update_corporation(self):
+        pass
+
+    def test_01_create_update_user(self):
+        pass
 
     def test_01_create_update_store(self):
         pass
