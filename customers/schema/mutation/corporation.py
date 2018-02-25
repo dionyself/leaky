@@ -23,8 +23,11 @@ class CreateCorporation(graphene.Mutation):
         ok = False
         try:
             user = None
-            if args.get("user_id"):
-                user = get_user_model().objects.filter(pk=args.pop("user_id")).first()
+            user_id = args.pop("user_id", 0)
+            if args.get("related_corporation_id") == 0:
+                del args["related_corporation_id"]
+            if user_id > 0:
+                user = get_user_model().objects.filter(pk=user_id).first()
                 assert user, "Error: invalid value for user_id"
             corporation = Corporation.objects.create(**args)
             if user and corporation:
@@ -40,11 +43,11 @@ class CreateCorporation(graphene.Mutation):
 
 class UpdateCorporation(graphene.Mutation):
     class Arguments:
-        pk = graphene.Int()
+        id = graphene.Int()
         name = graphene.String()
         description = graphene.String()
-        properties = graphene.String()
-        related_group_id = graphene.Int()
+        properties = GenericScalar()
+        related_corporation_id = graphene.Int()
         phone = graphene.String()
         is_active = graphene.Boolean()
         is_deleted = graphene.Boolean()
@@ -58,10 +61,10 @@ class UpdateCorporation(graphene.Mutation):
         corporation = None
 
         try:
-            if 'pk' in args:
-                pk = args.pop("pk")
-                Corporation.objects.filter(id=pk).update(**args)
-                corporation = Corporation.objects.filter(id=pk).first()
+            if 'id' in args:
+                id = args.pop("id")
+                Corporation.objects.filter(id=id).update(**args)
+                corporation = Corporation.objects.filter(id=id).first()
                 ok = True
         except:
             corporation = None

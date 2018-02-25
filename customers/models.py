@@ -6,7 +6,7 @@ from django.utils.translation import gettext as _
 
 
 class Corporation(models.Model):
-    name = models.CharField(max_length=100, help_text="Group Name.")
+    name = models.CharField(unique=True, max_length=100, help_text="Group Name.")
     description = models.CharField(max_length=200, null=True, blank=True)
     properties = JSONField(null=True, blank=True, help_text="The group properties.")
     related_corporation = models.ForeignKey("self", null=True)  # probably not needed
@@ -29,7 +29,7 @@ class StoreUser(UserProfile):
 
 class Store(TenantBase):
     created_on = models.DateField(auto_now_add=True)
-    name = models.CharField(max_length=100, help_text="Local Name.")
+    name = models.CharField(unique=True, max_length=100, help_text="Local Name.")
     description = models.TextField(max_length=200)
     corporation = models.ForeignKey(Corporation, null=True, blank=True, help_text="Corporation")
     phone = models.CharField(max_length=100, help_text="Local Phone.")

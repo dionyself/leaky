@@ -64,13 +64,15 @@ class BaseTestCase(unittest.TestCase):
         # Create public tenant, test tenant and user.
         try:
             create_public_tenant(main_host, main_email)
+            user = User.objects.create_user(email=test_tenant_email, password=test_tenant_password, is_active=True)
+            provision_tenant(test_tenant_name, test_tenant_host, test_tenant_email)
             cls.PUBLIC_TENANT["schema_name"] = get_public_schema_name()
             cls.PUBLIC_TENANT["tenant"] = Tenant.objects.filter(domain_url=settings.TENANT_USERS_DOMAIN).first()
-            cls.PUBLIC_TENANT["user"] = User.objects.filter(domain_url=settings.TENANT_USERS_DOMAIN).first()
+            cls.PUBLIC_TENANT["user"] = User.objects.filter(store__domain_url=settings.TENANT_USERS_DOMAIN).first()
             cls.TENANT_GROUPS["test_corporation"]["tenant_group"] = Corporation.objects.create(name="test_corporation", phone="1-555-5555")
-            cls.TENANTS["test"]["user"] = User.objects.create_user(email=test_tenant_email, password=test_tenant_password, is_active=True)
-            cls.TENANTS["test"]["tenant"] = provision_tenant(test_tenant_name, test_tenant_host, test_tenant_email)
-            cls.TENANTS["test"]["schema_name"] = cls.TENANTS["test"]["tennat"].schema_name
+            cls.TENANTS["test"]["user"] = user
+            cls.TENANTS["test"]["tenant"] = Tenant.objects.filter(domain_url="%s.%s" % (settings.TEST_TENANT_HOST, settings.TENANT_USERS_DOMAIN)).first()
+            cls.TENANTS["test"]["schema_name"] = cls.TENANTS["test"]["tenant"].schema_name
         except Exception as e:
             print_exc()
 
