@@ -1,10 +1,11 @@
-from graphene_django.views import GraphQLView
+#from graphene_django.views import GraphQLView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from graphene_django_subscriptions import depromise_subscription
+from graphene_django_extras.views import ExtraGraphQLView#, AuthenticatedGraphQLView
 from .middlewares import PermissionsMiddleware
 
 
-class PrivateGraphQLView(LoginRequiredMixin, GraphQLView):
+class PrivateGraphQLView(LoginRequiredMixin, ExtraGraphQLView):
     def execute(self, *args, **kwargs):
         #from graphql.execution.middleware import MiddlewareManager
         #kwargs["middleware"] = MiddlewareManager(*kwargs["middleware"], wrap_in_promise=False)
