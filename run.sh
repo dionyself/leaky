@@ -56,8 +56,8 @@ python manage.py migrate_schemas --shared
 # create new apps
 # python manage.py startapp <app_name>
 
-if [ $LEAKY_TESTS == "1" ]; then
-    python manage.py test -v 2
+if [[ $LEAKY_TESTS == "1" ]]; then
+    python -Wall manage.py test -v 2
 fi
 
 python init_db.py

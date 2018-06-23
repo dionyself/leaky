@@ -9,7 +9,7 @@ class Corporation(models.Model):
     name = models.CharField(unique=True, max_length=100, help_text="Group Name.")
     description = models.CharField(max_length=200, null=True, blank=True)
     properties = JSONField(null=True, blank=True, help_text="The group properties.")
-    related_corporation = models.ForeignKey("self", null=True)  # probably not needed
+    related_corporation = models.ForeignKey("self", null=True, on_delete=models.CASCADE)  # probably not needed
     phone = models.CharField(max_length=100, help_text="Local Phone.")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -19,7 +19,7 @@ class Corporation(models.Model):
 
 class StoreUser(UserProfile):
     name = models.CharField(_("Name"), max_length=100, blank=True)
-    corporation = models.ForeignKey(Corporation, null=True, blank=True, help_text="Corporation")
+    corporation = models.ForeignKey(Corporation, null=True, blank=True, help_text="Corporation", on_delete=models.CASCADE)
     properties = JSONField(null=True, blank=True, help_text="The group properties.")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -31,7 +31,7 @@ class Store(TenantBase):
     created_on = models.DateField(auto_now_add=True)
     name = models.CharField(unique=True, max_length=100, help_text="Local Name.")
     description = models.TextField(max_length=200)
-    corporation = models.ForeignKey(Corporation, null=True, blank=True, help_text="Corporation")
+    corporation = models.ForeignKey(Corporation, null=True, blank=True, help_text="Corporation", on_delete=models.CASCADE)
     phone = models.CharField(max_length=100, help_text="Local Phone.")
     latitude = models.FloatField(null=True, blank=True, help_text="coordinates.")
     longitude = models.FloatField(null=True, blank=True, help_text="coodinates.")
@@ -58,8 +58,8 @@ class Product(models.Model):
 
 
 class Review(models.Model):
-    user = models.ForeignKey(StoreUser, help_text="User/Reviewer")
-    product = models.ForeignKey(Product, help_text="Product")
+    user = models.ForeignKey(StoreUser, help_text="User/Reviewer", on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, help_text="Product", on_delete=models.CASCADE)
     title = models.TextField(help_text="Review Title.")
     content = models.TextField(help_text="Review content.")
     comments = models.TextField(help_text="Review coments.")
@@ -73,7 +73,7 @@ class Review(models.Model):
 
 
 class ReviewComment(models.Model):
-    user = models.ForeignKey(StoreUser, help_text="User/Reviewer")
+    user = models.ForeignKey(StoreUser, help_text="User/Reviewer", on_delete=models.CASCADE)
     content = models.TextField(help_text="Comment content.")
     likes = models.ManyToManyField(StoreUser, related_name="review_comments_liked", help_text="Likes.")
     dislikes = models.ManyToManyField(StoreUser, related_name="review_comments_disliked", help_text="Dislikes.")

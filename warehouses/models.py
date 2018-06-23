@@ -5,7 +5,7 @@ from customers.models import Product
 
 
 class Asset(models.Model):
-    product = models.ForeignKey(Product, null=True, blank=True, help_text="Global product_id.")
+    product = models.ForeignKey(Product, null=True, blank=True, help_text="Global product_id.", on_delete=models.CASCADE)
     modded_product_name = models.TextField(null=True, blank=True, unique=True, help_text="Name for custominzed/variant product")
     cost = MoneyField(max_digits=10, decimal_places=2, default_currency='USD', help_text="The Asset raw cost.")
     minimal_earnings = models.IntegerField(default=0, help_text="Minimal earning expected.")
