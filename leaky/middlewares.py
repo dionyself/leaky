@@ -1,7 +1,7 @@
 from tenant_users.tenants.utils import get_current_tenant
 from django.db import connection
 from customers.models import Corporation
-from tenant_schemas.utils import get_public_schema_name, get_tenant_model, schema_context
+from django_tenants.utils import get_public_schema_name, get_tenant_model, schema_context
 from leaky.utils import print_user_credentials
 
 

@@ -1,6 +1,6 @@
 Django<2.1.0
 django-filter<2.0.0
-django-tenant-schemas<2.0.0
+django_tenants==2.0.0
 django-tenant-users<1.0.0
 django-money<1.0.0
 graphene-django<3.0.0

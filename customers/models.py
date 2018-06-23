@@ -3,6 +3,7 @@ from django.contrib.postgres.fields import JSONField
 from tenant_users.tenants.models import TenantBase
 from tenant_users.tenants.models import UserProfile
 from django.utils.translation import gettext as _
+from django_tenants.models import DomainMixin
 
 
 class Corporation(models.Model):
@@ -36,11 +37,18 @@ class Store(TenantBase):
     latitude = models.FloatField(null=True, blank=True, help_text="coordinates.")
     longitude = models.FloatField(null=True, blank=True, help_text="coodinates.")
     time_zone = models.CharField(max_length=100, null=True, blank=True)
+    paid_until = models.DateField(null=True, blank=True)
+    on_trial = models.BooleanField(default=True)
+    created_on = models.DateField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    auto_create_schema = True
+    #auto_create_schema = True
+
+
+class Domain(DomainMixin):
+    pass
 
 
 class Product(models.Model):

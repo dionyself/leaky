@@ -42,10 +42,11 @@ LEAKY_VERSION = "v0.0.1"
 PUBLIC_SCHEMA_URLCONF = 'leaky.urls_public'
 ROOT_URLCONF = 'leaky.urls_tenants'
 TENANT_MODEL = "customers.Store"  # app.Model
+TENANT_DOMAIN_MODEL = "customers.Domain" # app.Model
 AUTH_USER_MODEL = "customers.StoreUser"
 
 MIDDLEWARE = [
-    'tenant_schemas.middleware.TenantMiddleware',
+    'django_tenants.middleware.main.TenantMainMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -73,7 +74,7 @@ TEMPLATES = [
 ]
 
 SHARED_APPS = (
-    'tenant_schemas',  # mandatory, should always be before any django app
+    'django_tenants',  # mandatory, should always be before any django app
 
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -98,7 +99,7 @@ TENANT_APPS = (
 )
 
 INSTALLED_APPS = (
-    'tenant_schemas',  # mandatory, should always be before any django app
+    'django_tenants',  # mandatory, should always be before any django app
 
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -140,7 +141,7 @@ WSGI_APPLICATION = 'leaky.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'tenant_schemas.postgresql_backend',
+        'ENGINE': 'django_tenants.postgresql_backend',
         'NAME': os.environ.get("LEAKY_DATABASE_NAME"),
         'USER': os.environ.get("LEAKY_DATABASE_USER"),
         'PASSWORD': os.environ.get("LEAKY_DATABASE_PASSWORD"),
@@ -150,7 +151,7 @@ DATABASES = {
     }
 }
 DATABASE_ROUTERS = (
-    'tenant_schemas.routers.TenantSyncRouter',
+    'django_tenants.routers.TenantSyncRouter',
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -190,4 +191,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATIC_URL = '/static/'
 
-DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
+DEFAULT_FILE_STORAGE = 'django_tenants.files.storages.TenantFileSystemStorage'

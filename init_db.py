@@ -58,10 +58,11 @@ try:
         print("Added Store: {}".format(test_tenant_name))
         print("Creating a normal user {} for Store: {}".format("user@leaky.com", test_tenant_name))
         user = UserModel.objects.create_user(email="user@leaky.com", password="password", is_staff=False)
-        tenant = Store.objects.filter(domain_url=fqdn).first()
+        #tenant = Store.objects.filter(domain_url=fqdn).first()
+        tenant = Store.objects.filter(domains__domain=fqdn).first()
         tenant.add_user(user, is_superuser=False, is_staff=False)
         print("User added")
-        
+
     if settings.AUTO_CREATE_TEST_TENANT_GROUP:
         print("Creating a test corporation... to avoid this set AUTO_CREATE_TEST_TENANT_GROUP to False")
         corp = Corporation.objects.create(
@@ -86,5 +87,5 @@ except Exception as e:
 #fqdn = provision_tenant("Test store1", "test1", "user1@leaky.com", is_staff=False)
 #fqdn = provision_tenant("Test store2", "test2", "user2@leaky.com", is_staff=False)
 #from customers.models import Store
-#tenat2 = Store.objects.filter(domain_url=fqdn).first()
-#tenat2.add_user(user1, is_superuser=False, is_staff=False)
+#tenant2 = Store.objects.filter(domain_url=fqdn).first()
+#tenant2.add_user(user1, is_superuser=False, is_staff=False)

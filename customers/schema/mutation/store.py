@@ -1,5 +1,5 @@
 import graphene
-from tenant_schemas.utils import get_tenant_model
+from django_tenants.utils import get_tenant_model
 from django.contrib.auth import get_user_model
 from tenant_users.tenants.tasks import provision_tenant
 
@@ -31,7 +31,7 @@ class CreateStore(graphene.Mutation):
                 assert user.corporation_id == args.get("corporation_id"), "user/corporation missmatch"
             domain_url = provision_tenant(
                 args.pop("name", ""), args.pop("subdomain", ""), args.pop("user_email", ""), is_staff=False)
-            store = get_tenant_model().objects.filter(domain_url=domain_url).update(**args)
+            store = get_tenant_model().objects.filter(domains__domain=domain_url).update(**args)
             ok = True
         except:
             store = None

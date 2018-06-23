@@ -5,7 +5,7 @@ from tenant_users.tenants.utils import create_public_tenant
 from tenant_users.tenants.tasks import provision_tenant
 from django.contrib.auth import get_user_model
 from graphene.test import Client as GqlClient
-from tenant_schemas.utils import (get_public_schema_name, get_tenant_model,
+from django_tenants.utils import (get_public_schema_name, get_tenant_model,
                                   schema_context)
 from leaky.schema import public_schema, tenant_schema
 from customers.models import Corporation
@@ -27,15 +27,15 @@ def execute_gql_query(query, tenant_name="public", tenant=None, as_user=None):
         with schema_context("public"):
             if tenant_name == "public":
                 tenant = Tenant.objects.filter(
-                    domain_url=settings.TENANT_USERS_DOMAIN).first()
+                    domains__domain=settings.TENANT_USERS_DOMAIN).first()
                 with schema_context(tenant.schema_name):
                     return gql_public_client.execute(query).get("data")
             elif tenant_name == "test":
                 tenant = Tenant.objects.filter(
-                    domain_url="%s.%s" % (settings.TEST_TENANT_HOST, settings.TENANT_USERS_DOMAIN)).first()
+                    domains__domain="%s.%s" % (settings.TEST_TENANT_HOST, settings.TENANT_USERS_DOMAIN)).first()
             else:
                 tenant = Tenant.objects.filter(
-                    domain_url="%s.%s" % (tenant_name, settings.TENANT_USERS_DOMAIN)).first()
+                    domains__domain="%s.%s" % (tenant_name, settings.TENANT_USERS_DOMAIN)).first()
     with schema_context(tenant.schema_name):
         return gql_tenant_client.execute(query).get("data")
 
@@ -67,11 +67,11 @@ class BaseTestCase(unittest.TestCase):
             user = User.objects.create_user(email=test_tenant_email, password=test_tenant_password, is_active=True)
             provision_tenant(test_tenant_name, test_tenant_host, test_tenant_email)
             cls.PUBLIC_TENANT["schema_name"] = get_public_schema_name()
-            cls.PUBLIC_TENANT["tenant"] = Tenant.objects.filter(domain_url=settings.TENANT_USERS_DOMAIN).first()
-            cls.PUBLIC_TENANT["user"] = User.objects.filter(store__domain_url=settings.TENANT_USERS_DOMAIN).first()
+            cls.PUBLIC_TENANT["tenant"] = Tenant.objects.filter(domains__domain=settings.TENANT_USERS_DOMAIN).first()
+            cls.PUBLIC_TENANT["user"] = User.objects.filter(store__domains__domain=settings.TENANT_USERS_DOMAIN).first()
             cls.TENANT_GROUPS["test_corporation"]["tenant_group"] = Corporation.objects.create(name="test_corporation", phone="1-555-5555")
             cls.TENANTS["test"]["user"] = user
-            cls.TENANTS["test"]["tenant"] = Tenant.objects.filter(domain_url="%s.%s" % (settings.TEST_TENANT_HOST, settings.TENANT_USERS_DOMAIN)).first()
+            cls.TENANTS["test"]["tenant"] = Tenant.objects.filter(domains__domain="%s.%s" % (settings.TEST_TENANT_HOST, settings.TENANT_USERS_DOMAIN)).first()
             cls.TENANTS["test"]["schema_name"] = cls.TENANTS["test"]["tenant"].schema_name
         except Exception as e:
             print_exc()
