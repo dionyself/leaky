@@ -19,7 +19,6 @@ class CreateCorporation(graphene.Mutation):
     ok = graphene.Boolean()
 
     def mutate(self, info, **args):
-
         ok = False
         try:
             user = None

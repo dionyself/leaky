@@ -29,5 +29,6 @@ class Mutation(ObjectType):
     create_store = CreateStore.Field()
     update_store = UpdateStore.Field()
     login = LogIn.Field()
+    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()
     refresh_token = graphql_jwt.Refresh.Field()
