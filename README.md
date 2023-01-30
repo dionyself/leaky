@@ -11,3 +11,10 @@ Map the domains on your hosts file
 
 # Visit to login
 test.leaky.com:8000/graphql
+
+### DISCLAIMER
+CONFIDENTIAL AND SENSITIVE INFO:
+This project is not intented to collect any sensitive info, but
+it may LEAD to exposing underlying confidential info; All the collected info
+is adquired from public domain and I am not responsible on how this info
+is used.
